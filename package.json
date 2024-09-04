@@ -15,6 +15,7 @@
     "**/*": "prettier --write ."
   },
   "dependencies": {
+    "@headlessui/react": "^2.1.4",
     "@starknet-react/chains": "^0.1.7",
     "@starknet-react/core": "^2.9.0",
     "get-starknet-core": "^3.3.3",
