@@ -6,6 +6,7 @@ import {
 } from "@/utils/constants";
 import { getProvider } from "@/utils";
 import REGISTRY_ABI from "../app/abis/registry.abi.json";
+import ACCOUNT_ABI from "../app/abis/account.abi.json";
 import { BigNumberish, Contract } from "starknet";
 
 export const getAccount = async (params: {
@@ -38,5 +39,20 @@ export const getAccount = async (params: {
     return address;
   } catch (error) {
     throw error;
+  }
+};
+
+export const getOwnerNFT = async (params: {
+  tbaAddress: string;
+  jsonRPC: string;
+}) => {
+  const { jsonRPC, tbaAddress } = params;
+  const provider = getProvider(jsonRPC);
+  const contract = new Contract(ACCOUNT_ABI, tbaAddress, provider);
+  try {
+    const ownerNFT = await contract.token();
+    return ownerNFT;
+  } catch (error) {
+    console.error("An error occurred while fetching the nft", error);
   }
 };
