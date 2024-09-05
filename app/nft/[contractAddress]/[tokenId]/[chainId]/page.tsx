@@ -10,11 +10,9 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { num } from "starknet";
 type NetworkType = "" | "mainnet" | "sepolia";
-import { useRef } from "react";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-// import { ChevronDownIcon, HambugerIcon, TBALogo } from "@public/assets/Icons";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { HambugerIcon } from "@/app/assets/Icons";
 
 const tabs = ["Collectibles", "Assets"];
 
@@ -37,6 +35,7 @@ const Token = () => {
     name: "",
   });
   const [collectibles, setCollectibles] = useState<any[]>([]);
+
   const [tba, setTba] = useState<{
     address: string;
     ethBalance: number;
@@ -99,45 +98,42 @@ const Token = () => {
     fetchTBA({ network: network, url: url });
   }, []);
 
-  const ref = useRef(null);
-
   const onTabChange = (tab: number) => {
     setActiveTab(tab);
   };
 
   return (
-    // The image returned is meant to be displayed.
-    // The NFT loading state has been set up (feel free to improve it if needed).
-    // The balance for each token is being returned and should be displayed.
-    // The TBA address also needs to be displayed.
-    // the tba page too
-
-    <section className="relative">
+    <main className="flex h-[100vh] w-full justify-center overflow-hidden bg-slate-100">
       {loading ? (
-        <p>Loading....</p>
+        <div className="flex items-center justify-center text-black">
+          <p className="text-xl font-semibold">Loading...</p>
+        </div>
       ) : (
-        <>
-          <div className="mx-auto h-[800px] w-full max-w-[1080px]">
-            <img
-              src={nft.image}
-              alt={"image of NFT"}
-              className="h-full w-full"
-            />
+        <div className="relative h-[120vh] w-full bg-cover bg-center lg:min-w-[50rem] lg:max-w-[50rem]">
+          <div className={`w-full items-center justify-center`}>
+            <div className="flex w-full items-center justify-center">
+              <img
+                src={nft?.image}
+                className={`h-full w-full object-contain`}
+                alt="Background"
+              />
+            </div>
           </div>
-          <div className="absolute top-0">
-            <button
+
+          <div className="">
+            <div
               onClick={() => setIsVisible(!isVisible)}
-              className="z-10 w-fit cursor-pointer rounded-full border-2 border-transparent bg-customGray p-2 px-5 py-5 opacity-[0.7] hover:opacity-[0.9]"
+              className="absolute left-0 top-0 z-10 ml-5 mt-5 w-fit cursor-pointer rounded-full border-2 border-transparent bg-customGray p-2 opacity-[0.7] hover:opacity-[0.9]"
             >
-              b
-            </button>
+              TBA
+            </div>
             {isVisible && (
               <motion.div
                 initial="hidden"
                 animate="visible"
                 exit="hidden"
                 variants={containerVariants}
-                className="mt-[30px] h-[87%] w-full max-w-[1080px] space-y-3 overflow-y-auto rounded-t-xl border-t-0 bg-white px-5 pt-5 no-scrollbar"
+                className="absolute inset-0 mt-20 h-[87%] w-full max-w-[1080px] space-y-3 overflow-y-auto rounded-t-xl border-t-0 bg-white px-5 pt-5 no-scrollbar"
               >
                 <div className="mb-4 flex items-center justify-center">
                   <div className="h-[2.5px] w-[34px] bg-[#E4E4E4]" />
@@ -147,55 +143,18 @@ const Token = () => {
                     <div className="relative inline-block text-left">
                       <div className="flex items-center justify-start space-x-2">
                         <div className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer">
-                          {tba.address}
+                          {`${tba.address.slice(0, 4)}...${tba.address.slice(-3)}`}
                         </div>
                       </div>
                     </div>
-                    <div className="w-full">
-                      <Menu
-                        as="div"
-                        className="relative inline-block text-left"
-                      >
-                        <div>
-                          <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            <div className="-mr-1 h-5 w-5 text-gray-400">
-                              {/* <ChevronDownIcon aria-hidden="true" /> */}
-                            </div>
-                          </MenuButton>
-                        </div>
 
-                        <MenuItems
-                          transition
-                          className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                        >
-                          <div className="py-1">
-                            <MenuItem>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                              >
-                                Address 1
-                              </a>
-                            </MenuItem>
-                            <MenuItem>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                              >
-                                Address 2
-                              </a>
-                            </MenuItem>
-                          </div>
-                        </MenuItems>
-                      </Menu>
-                    </div>
                     <Link
                       target="_blank"
                       rel="noopener noreferrer"
                       href="https://etherscan.io/address/0x718a9D173E66C411f48E41d3dA2fa6f0CE8f5D3c"
                       className="h-[20px] w-[20px] cursor-pointer"
                     >
-                      {/* <HambugerIcon /> */}
+                      <HambugerIcon />
                     </Link>
                   </div>
                 </div>
@@ -256,68 +215,141 @@ const Token = () => {
 
                 {activeTab == 0 && (
                   <div className="py-4">
-                    {collectibles.length && (
-                      <div className="grid grid-cols-1 gap-2 overflow-y-auto md:grid-cols-3">
-                        {collectibles.map((_, i) => (
-                          <div key={i} className="h-full w-full">
-                            <Link
-                              href="https://opensea.io/assets/ethereum/0x007af8ab4f1933c1e1512f344f132d0502b2ef33/0"
-                              target="_blank"
-                              className="cursor-pointer"
-                            >
-                              <div className="relative h-full w-full">
-                                <img
-                                  className="aspect-square rounded-xl object-cover"
-                                  src="https://nft-cdn.alchemy.com/eth-mainnet/a74029fcf172f7b87a86ebf36ea4e64b"
-                                  alt="token image"
-                                  width="full"
-                                  height="full"
-                                />
-                                <div className="absolute left-4 top-4 rounded-lg bg-[#000] bg-opacity-10 px-2 py-1 text-white backdrop-blur-sm">
-                                  <div className="font-sans text-xl font-semibold md:text-2xl">
-                                    x1
-                                  </div>
+                    {/* <div className="grid grid-cols-1 gap-2 overflow-y-auto md:grid-cols-3">
+                    {Array(8)
+                      .fill(0)
+                      .map((_, i) => (
+                        <div key={i} className="h-full w-full">
+                          <Link
+                            href="https://opensea.io/assets/ethereum/0x007af8ab4f1933c1e1512f344f132d0502b2ef33/0"
+                            target="_blank"
+                            className="cursor-pointer"
+                          >
+                            <div className="relative h-full w-full">
+                              <img
+                                className="aspect-square rounded-xl object-cover"
+                                src="https://nft-cdn.alchemy.com/eth-mainnet/a74029fcf172f7b87a86ebf36ea4e64b"
+                                alt="token image"
+                                width="full"
+                                height="full"
+                              />
+                              <div className="absolute left-4 top-4 rounded-lg bg-[#000] bg-opacity-10 px-2 py-1 text-white backdrop-blur-sm">
+                                <div className="font-sans text-xl font-semibold md:text-2xl">
+                                  x1
                                 </div>
                               </div>
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                            </div>
+                          </Link>
+                        </div>
+                      ))}
+                  </div> */}
+                    <p className="text-center text-lg font-bold text-black">
+                      No collectibles yet!
+                    </p>
                   </div>
                 )}
 
                 {activeTab == 1 && (
-                  <div className="py-4">
-                    <div className="flex items-center justify-between space-x-4 space-y-5">
-                      <div className="flex items-center space-x-[10px]">
-                        <img
-                          src="https://iframe-tokenbound.vercel.app/ethereum-logo.png"
-                          alt="logo"
-                          className="h-8 w-8 rounded-full object-cover"
-                        />
-                      </div>
+                  <div className="">
+                    <div className="py-4">
+                      <div className="flex items-center justify-between space-x-4 space-y-5">
+                        <div className="flex items-center space-x-[10px]">
+                          <img
+                            src="https://www.starknet.io/wp-content/uploads/2024/04/sn-symbol-gradient.png"
+                            alt="logo"
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                          <p className="font-normal text-primary">Stark</p>
+                        </div>
 
-                      <p>
-                        <span className="font-normal text-primary">
-                          Ethereum
-                        </span>
-                        <span className="text-[#979797]">{tba.ethBalance}</span>
-                      </p>
+                        <div>
+                          <p className="text-base text-[#979797]">
+                            {tba?.strkBalance}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    {/* other balances to style */}
-                    <p> {tba.strkBalance}</p>
-                    {tba.daiBalance && <p>{tba.daiBalance}</p>}
-                    {tba.usdcBalance && <p>{tba.usdcBalance}</p>}
-                    {tba.usdtBalance && <p>{tba.usdtBalance}</p>}
+                    <div className="py-4">
+                      <div className="flex items-center justify-between space-x-4 space-y-5">
+                        <div className="flex items-center space-x-[10px]">
+                          <img
+                            src="https://iframe-tokenbound.vercel.app/ethereum-logo.png"
+                            alt="logo"
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                          <p className="font-normal text-primary">Ethereum</p>
+                        </div>
+
+                        <div>
+                          <p className="text-base text-[#979797]">
+                            {tba?.ethBalance}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-4">
+                      <div className="flex items-center justify-between space-x-4 space-y-5">
+                        <div className="flex items-center space-x-[10px]">
+                          <img
+                            src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png"
+                            alt="logo"
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                          <p className="font-normal text-primary">Dai</p>
+                        </div>
+
+                        <div>
+                          <p className="text-base text-[#979797]">
+                            {tba?.daiBalance}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-4">
+                      <div className="flex items-center justify-between space-x-4 space-y-5">
+                        <div className="flex items-center space-x-[10px]">
+                          <img
+                            src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                            alt="logo"
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                          <p className="font-normal text-primary">USDC</p>
+                        </div>
+
+                        <div>
+                          <p className="text-base text-[#979797]">
+                            {tba?.usdcBalance}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="py-4">
+                      <div className="flex items-center justify-between space-x-4 space-y-5">
+                        <div className="flex items-center space-x-[10px]">
+                          <img
+                            src="https://cryptologos.cc/logos/tether-usdt-logo.png"
+                            alt="logo"
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                          <p className="font-normal text-primary">USDT</p>
+                        </div>
+
+                        <div>
+                          <p className="text-base text-[#979797]">
+                            {tba?.usdtBalance}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </motion.div>
             )}
           </div>
-        </>
+        </div>
       )}
-    </section>
+    </main>
   );
 };
 
