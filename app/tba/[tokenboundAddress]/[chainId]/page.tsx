@@ -21,6 +21,7 @@ const TokenBound = () => {
     name: "",
   });
   const [nftLoading, setNftLoading] = useState(true);
+  const [collectibles, setCollectibles] = useState<any[]>([]);
   const [tba, setTba] = useState<{
     address: string;
     ethBalance: number;
@@ -60,7 +61,11 @@ const TokenBound = () => {
     if (chainId && tokenboundAddress) {
       const { network, url } = getChainData(chainId.toUpperCase());
       fetchOwnerNFT({ network, url });
-      fetchTbaNonFungibleAssets({ address: tokenboundAddress, url: url || "" });
+      fetchTbaNonFungibleAssets({
+        address: tokenboundAddress,
+        url: url || "",
+        setAssets: setCollectibles,
+      });
       fetchTbaFungibleAssets({
         network,
         tbaAddress: tokenboundAddress,

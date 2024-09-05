@@ -116,9 +116,11 @@ export const fetchTbaFungibleAssets = async ({
 export const fetchTbaNonFungibleAssets = async ({
   address,
   url,
+  setAssets,
 }: {
   url: string;
   address: string;
+  setAssets: Dispatch<SetStateAction<any[]>>;
 }) => {
   const endpoint = `https://${url}/v1/owners/${address}/tokens`;
   const res = await fetch(endpoint, {
@@ -129,7 +131,8 @@ export const fetchTbaNonFungibleAssets = async ({
   });
   if (res.ok) {
     const data = await res.json();
-    console.log("all asset", data);
+    setAssets(data.result);
+    console.log("all asset", data.result);
   }
 };
 export const getChainData = (
