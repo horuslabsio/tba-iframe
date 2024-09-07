@@ -139,7 +139,7 @@ const Panel = ({
                             height="full"
                           />
                           <div className="absolute left-4 top-4 rounded-lg bg-[#000] bg-opacity-10 px-2 py-1 text-white backdrop-blur-sm">
-                            <div className="font-sans text-xl font-semibold md:text-2xl">
+                            <div className="font-sans text-sm font-semibold">
                               x1
                             </div>
                           </div>
