@@ -98,7 +98,7 @@ const Token = () => {
       <section className="container mx-auto flex h-full w-full lg:max-h-[100rem] lg:w-[50vw] lg:max-w-[100rem]">
         {loading ? (
           <div className="flex h-full w-full items-center justify-center">
-            <div className="flex h-20 w-20 animate-bounce items-center justify-center rounded-full mix-blend-difference">
+            <div className="flex h-20 w-20 animate-bounce items-center justify-center rounded-full text-[#d9d9d966] mix-blend-difference">
               <TBALogo2 />
             </div>
           </div>
