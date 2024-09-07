@@ -9,6 +9,8 @@ import {
 } from "@/utils/constants";
 import { Dispatch, SetStateAction } from "react";
 
+export type NetworkType = "" | "mainnet" | "sepolia";
+
 export function getProvider(jsonRPC: string) {
   const provider = new RpcProvider({
     nodeUrl: jsonRPC,
@@ -52,11 +54,12 @@ export const fetchTbaFungibleAssets = async ({
   setTba: Dispatch<
     SetStateAction<{
       address: string;
+      chain: NetworkType;
       ethBalance: number;
       strkBalance: number;
-      daiBalance?: number;
-      usdcBalance?: number;
-      usdtBalance?: number;
+      daiBalance?: number | undefined;
+      usdcBalance?: number | undefined;
+      usdtBalance?: number | undefined;
     }>
   >;
   onMainnet?: boolean;
@@ -184,12 +187,24 @@ export const fetchNFTData = async ({
     });
     if (response.ok) {
       const data = await response.json();
-      setNft({
-        image: data.result.metadata.normalized.image,
-        name: data.result.metadata.normalized.name,
-      });
+      const imageUrl = data.result.metadata.normalized.image;
+      const imageName = data.result.metadata.normalized.name;
 
-      setLoading(false);
+      const img = new Image();
+      img.src = imageUrl;
+
+      img.onload = () => {
+        setNft({
+          image: data.result.metadata.normalized.image,
+          name: data.result.metadata.normalized.name,
+        });
+        setLoading(false);
+      };
+
+      img.onerror = (err) => {
+        console.error("An error occurred while loading the image", err);
+        setLoading(false);
+      };
     }
   } catch (error) {
     console.error("An error occurred while fetching the nft", error);
