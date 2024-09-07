@@ -1,4 +1,9 @@
 import { OpenNewIcon, TBALogo, WarnIcon } from "@/public/svg/Icons";
+import strkLogo from "@/public/strk.png";
+import ethLogo from "@/public/eth.png";
+import daiLogo from "@/public/dai.png";
+import usdcLogo from "@/public/usdc.png";
+import usdtLogo from "@/public/usdt.png";
 import { NetworkType } from "@/utils";
 import CopyButton from "@/utils/CopyButton";
 import { motion } from "framer-motion";
@@ -45,14 +50,16 @@ const Panel = ({
   const onTabChange = (tab: number) => {
     setActiveTab(tab);
   };
+
   return (
-    <div className="">
+    <div className="w-full">
       <button
         onClick={() => setIsVisible(!isVisible)}
         className="absolute left-0 top-0 z-10 ml-5 mt-5 w-fit cursor-pointer rounded-full border-2 border-transparent bg-customGray p-2 opacity-[0.7] mix-blend-difference hover:opacity-[0.9]"
       >
         <TBALogo />
       </button>
+
       {isVisible && (
         <motion.div
           initial="hidden"
@@ -155,7 +162,7 @@ const Panel = ({
                 <div className="flex items-center justify-between space-x-4 space-y-5">
                   <div className="flex items-center space-x-[10px]">
                     <img
-                      src="https://www.starknet.io/wp-content/uploads/2024/04/sn-symbol-gradient.png"
+                      src={strkLogo.src}
                       alt="logo"
                       className="h-8 w-8 rounded-full object-cover"
                     />
@@ -173,7 +180,7 @@ const Panel = ({
                 <div className="flex items-center justify-between space-x-4 space-y-5">
                   <div className="flex items-center space-x-[10px]">
                     <img
-                      src="https://iframe-tokenbound.vercel.app/ethereum-logo.png"
+                      src={ethLogo.src}
                       alt="logo"
                       className="h-8 w-8 rounded-full object-cover"
                     />
@@ -192,7 +199,7 @@ const Panel = ({
                   <div className="flex items-center justify-between space-x-4 space-y-5">
                     <div className="flex items-center space-x-[10px]">
                       <img
-                        src="https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png"
+                        src={daiLogo.src}
                         alt="logo"
                         className="h-8 w-8 rounded-full object-cover"
                       />
@@ -212,7 +219,7 @@ const Panel = ({
                   <div className="flex items-center justify-between space-x-4 space-y-5">
                     <div className="flex items-center space-x-[10px]">
                       <img
-                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                        src={usdcLogo.src}
                         alt="logo"
                         className="h-8 w-8 rounded-full object-cover"
                       />
@@ -232,7 +239,7 @@ const Panel = ({
                   <div className="flex items-center justify-between space-x-4 space-y-5">
                     <div className="flex items-center space-x-[10px]">
                       <img
-                        src="https://cryptologos.cc/logos/tether-usdt-logo.png"
+                        src={usdtLogo.src}
                         alt="logo"
                         className="h-8 w-8 rounded-full object-cover"
                       />

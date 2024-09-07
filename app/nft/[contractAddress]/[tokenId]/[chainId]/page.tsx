@@ -19,6 +19,7 @@ const Token = () => {
     tokenId: string;
     chainId: string;
   }>();
+  const { network, url } = getChainData(chainId.toUpperCase());
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -83,7 +84,6 @@ const Token = () => {
   };
 
   useEffect(() => {
-    const { network, url } = getChainData(chainId.toUpperCase());
     const END_POINT = `https://${url}/v1/tokens/${contractAddress}/${tokenId}`;
     fetchNFTData({
       endpoint: END_POINT,
@@ -94,8 +94,8 @@ const Token = () => {
   }, []);
 
   return (
-    <main className="grid h-screen items-center justify-center">
-      <section className="container h-full lg:max-h-[100rem] lg:w-[50vw] lg:max-w-[100rem]">
+    <main className="grid h-screen items-center">
+      <section className="container mx-auto flex h-full w-full lg:max-h-[100rem] lg:w-[50vw] lg:max-w-[100rem]">
         {loading ? (
           <div className="flex h-full w-full items-center justify-center">
             <div className="flex h-20 w-20 animate-bounce items-center justify-center rounded-full mix-blend-difference">
@@ -103,9 +103,9 @@ const Token = () => {
             </div>
           </div>
         ) : (
-          <div className="relative flex h-full w-full items-center justify-center">
+          <div className="relative h-full w-full">
             <div
-              className={`bg flex w-full min-w-[90vw] items-center justify-center p-2 transition-all lg:min-w-[50vw] ${isVisible ? "h-full blur-sm" : "h-[80%] blur-0"}`}
+              className={`h-full p-2 transition-all ${isVisible ? "h-full blur-sm" : "h-[80%] blur-0"}`}
             >
               <img
                 src={nft?.image}
@@ -117,7 +117,7 @@ const Token = () => {
               activeTab={activeTab}
               address={tba.address}
               collectibles={collectibles}
-              chain={tba.chain}
+              chain={network}
               isVisible={isVisible}
               nftName={nft.name}
               setActiveTab={setActiveTab}

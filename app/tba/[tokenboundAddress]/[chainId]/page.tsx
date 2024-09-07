@@ -18,7 +18,7 @@ const TokenBound = () => {
     tokenboundAddress: string;
     chainId: string;
   }>();
-
+  const { network, url } = getChainData(chainId.toUpperCase());
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -68,7 +68,9 @@ const TokenBound = () => {
       });
     };
     if (chainId && tokenboundAddress) {
-      const { network, url } = getChainData(chainId.toUpperCase());
+      // const { network, url } = getChainData(chainId.toUpperCase());
+      console.log(network);
+
       fetchOwnerNFT({ network, url });
       fetchTbaNonFungibleAssets({
         address: tokenboundAddress,
@@ -82,11 +84,11 @@ const TokenBound = () => {
         onMainnet: network === "mainnet",
       });
     }
-  }, []);
+  }, [network]);
 
   return (
-    <main className="grid h-screen items-center justify-center">
-      <section className="container h-full lg:max-h-[100rem] lg:w-[50vw] lg:max-w-[100rem]">
+    <main className="h-screen">
+      <section className="container mx-auto flex h-full w-full lg:max-h-[100rem] lg:w-[50vw] lg:max-w-[100rem]">
         {nftLoading ? (
           <div className="flex h-full w-full items-center justify-center">
             <div className="flex h-20 w-20 animate-bounce items-center justify-center rounded-full mix-blend-difference">
@@ -94,9 +96,9 @@ const TokenBound = () => {
             </div>
           </div>
         ) : (
-          <div className="relative flex h-full w-full items-center justify-center">
+          <div className="relative h-full w-full">
             <div
-              className={`bg flex w-full min-w-[90vw] items-center justify-center p-2 transition-all lg:min-w-[50vw] ${isVisible ? "h-full blur-sm" : "h-[80%] blur-0"}`}
+              className={`h-full p-2 transition-all lg:min-w-[50vw] ${isVisible ? "h-full blur-sm" : "h-[80%] blur-0"}`}
             >
               <img
                 src={nft?.image}
@@ -108,7 +110,7 @@ const TokenBound = () => {
               activeTab={activeTab}
               address={tokenboundAddress}
               collectibles={collectibles}
-              chain={tba.chain}
+              chain={network}
               isVisible={isVisible}
               nftName={nft.name}
               setActiveTab={setActiveTab}
