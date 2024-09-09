@@ -40,4 +40,4 @@ We use Ark Project for indexing NFT information and Alchemy for blockchain inter
 
 To learn more about Tokenbound, take a look at the following resources:
 
-- [Tokenbound Documentation](https://nextjs.org/docs)
+- [Starknet Tokenbound Documentation](https://docs.tbaexplorer.com/)
