@@ -5,9 +5,10 @@ export default function Home() {
     <main className="grid h-screen grid-rows-5 items-center justify-between">
       <div className="row-span-4 text-center">
         <div className="mx-auto mb-4 flex w-fit gap-4">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full mix-blend-multiply">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full">
             <TBALogo2 />
           </div>
+
           <img
             src="./strk.png"
             alt="logo"
