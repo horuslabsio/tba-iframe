@@ -3,11 +3,12 @@ import {
   TBA_CONTRACT_ADDRESS_SEPOLIA,
   TBA_IMPLEMENTATION_ACCOUNT_MAINNET,
   TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA,
-} from "@/utils/constants";
-import { getProvider } from "@/utils";
-import REGISTRY_ABI from "../app/abis/registry.abi.json";
-import ACCOUNT_ABI from "../app/abis/account.abi.json";
+} from "@/app/utils/constants";
+import REGISTRY_ABI from "../abis/registry.abi.json";
+import ACCOUNT_ABI from "../abis/account.abi.json";
 import { BigNumberish, Contract } from "starknet";
+import { Dispatch, SetStateAction } from "react";
+import { getProvider } from "@/app/helper";
 
 export const getAccount = async (params: {
   tokenContract: string;
@@ -52,6 +53,53 @@ export const getOwnerNFT = async (params: {
   try {
     const ownerNFT = await contract.token();
     return ownerNFT;
+  } catch (error) {
+    console.error("An error occurred while fetching the nft", error);
+  }
+};
+
+export const fetchNFTData = async ({
+  endpoint,
+  setLoading,
+  setNft,
+}: {
+  endpoint: string;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  setNft: Dispatch<
+    SetStateAction<{
+      image: string;
+      name: string;
+    }>
+  >;
+}) => {
+  try {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "x-api-key": process.env.NEXT_PUBLIC_ARK_API_KEY || "",
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const imageUrl = data.result.metadata.normalized.image;
+      const imageName = data.result.metadata.normalized.name;
+
+      const img = new Image();
+      img.src = imageUrl;
+
+      img.onload = () => {
+        setNft({
+          image: data.result.metadata.normalized.image,
+          name: data.result.metadata.normalized.name,
+        });
+        setLoading(false);
+      };
+
+      img.onerror = (err) => {
+        console.error("An error occurred while loading the image", err);
+        setLoading(false);
+      };
+    }
   } catch (error) {
     console.error("An error occurred while fetching the nft", error);
   }

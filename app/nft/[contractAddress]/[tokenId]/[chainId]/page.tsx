@@ -1,17 +1,16 @@
 "use client";
-import { getAccount } from "@/hooks";
-import {
-  NetworkType,
-  fetchNFTData,
-  fetchTbaFungibleAssets,
-  fetchTbaNonFungibleAssets,
-  getChainData,
-} from "@/utils";
+import { getAccount, fetchNFTData } from "@/app/hooks";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { num } from "starknet";
 import { TBALogo2 } from "@/public/svg/Icons";
 import Panel from "@/app/components/Panel";
+import {
+  NetworkType,
+  fetchTbaFungibleAssets,
+  fetchTbaNonFungibleAssets,
+  getChainData,
+} from "@/app/helper";
 
 const Token = () => {
   const { chainId, contractAddress, tokenId } = useParams<{

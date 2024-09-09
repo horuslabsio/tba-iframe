@@ -4,11 +4,11 @@ import ethLogo from "@/public/eth.png";
 import daiLogo from "@/public/dai.png";
 import usdcLogo from "@/public/usdc.png";
 import usdtLogo from "@/public/usdt.png";
-import { NetworkType } from "@/utils";
-import CopyButton from "@/utils/CopyButton";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
+import { NetworkType } from "@/app/helper";
+import CopyButton from "../utils/CopyButton";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 100 },
