@@ -30,7 +30,7 @@ pnpm dev
 
 We use Ark Project for indexing NFT information and Alchemy for blockchain interactions. Ensure you have accounts with both platforms and input your API keys in the `.env.local` file.
 
-## Getting your NFT artwork to show up in the iFrame
+## Getting your NFT to show up in the iFrame
 
 - NFT Route: The contract address and token ID are extracted from the URL parameters `/contractAddress/tokenId`. The `fetchNFTData` function in `app/hooks/index.ts` fetches the NFT data, and the Token Bound Account (TBA) associated with the token ID (used as the salt) is returned.
 
