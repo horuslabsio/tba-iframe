@@ -1,14 +1,13 @@
 "use client";
 import Panel from "@/app/components/Panel";
-import { getOwnerNFT } from "@/hooks";
-import { TBALogo2 } from "@/public/svg/Icons";
 import {
   NetworkType,
-  fetchNFTData,
   fetchTbaFungibleAssets,
   fetchTbaNonFungibleAssets,
   getChainData,
-} from "@/utils";
+} from "@/app/helper";
+import { getOwnerNFT, fetchNFTData } from "@/app/hooks";
+import { TBALogo2 } from "@/public/svg/Icons";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { num } from "starknet";
@@ -68,9 +67,6 @@ const TokenBound = () => {
       });
     };
     if (chainId && tokenboundAddress) {
-      // const { network, url } = getChainData(chainId.toUpperCase());
-      console.log(network);
-
       fetchOwnerNFT({ network, url });
       fetchTbaNonFungibleAssets({
         address: tokenboundAddress,
