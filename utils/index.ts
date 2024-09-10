@@ -1,12 +1,12 @@
 import { Contract, RpcProvider } from "starknet";
-import ERC20ABI from "../abis/token.abi.json";
+import ERC20ABI from "../app/abis/token.abi.json";
 import {
   DAI_TOKEN_DETAILS,
   ETHER_TOKEN_DETAILS,
   STARK_TOKEN_DETAILS,
   USDC_TOKEN_DETAILS,
   USDT_TOKEN_DETAILS,
-} from "@/app/utils/constants";
+} from "@/utils/constants";
 import { Dispatch, SetStateAction } from "react";
 
 export type NetworkType = "" | "mainnet" | "sepolia";
@@ -17,32 +17,6 @@ export function getProvider(jsonRPC: string) {
   });
   return provider;
 }
-
-export const getChainData = (
-  id: string
-): {
-  network: "mainnet" | "sepolia" | "";
-  url: string | undefined;
-} => {
-  switch (id) {
-    case "SN_MAIN":
-      return {
-        network: "mainnet",
-        url: process.env.NEXT_PUBLIC_NETWORK_MAINNET,
-      };
-    case "SN_SEPOLIA":
-      return {
-        network: "sepolia",
-        url: process.env.NEXT_PUBLIC_NETWORK_SEPOLIA,
-      };
-
-    default:
-      return {
-        network: "",
-        url: process.env.NEXT_PUBLIC_NETWORK_SEPOLIA,
-      };
-  }
-};
 
 export async function getBalance({
   address,
@@ -142,7 +116,6 @@ export const fetchTbaFungibleAssets = async ({
     console.error("Error fetching TBA data", error);
   }
 };
-
 export const fetchTbaNonFungibleAssets = async ({
   address,
   url,
@@ -163,5 +136,77 @@ export const fetchTbaNonFungibleAssets = async ({
     const data = await res.json();
     setAssets(data.result);
     console.log("all asset", data.result);
+  }
+};
+export const getChainData = (
+  id: string
+): {
+  network: "mainnet" | "sepolia" | "";
+  url: string | undefined;
+} => {
+  switch (id) {
+    case "SN_MAIN":
+      return {
+        network: "mainnet",
+        url: process.env.NEXT_PUBLIC_NETWORK_MAINNET,
+      };
+    case "SN_SEPOLIA":
+      return {
+        network: "sepolia",
+        url: process.env.NEXT_PUBLIC_NETWORK_SEPOLIA,
+      };
+
+    default:
+      return {
+        network: "",
+        url: process.env.NEXT_PUBLIC_NETWORK_SEPOLIA,
+      };
+  }
+};
+
+export const fetchNFTData = async ({
+  endpoint,
+  setLoading,
+  setNft,
+}: {
+  endpoint: string;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  setNft: Dispatch<
+    SetStateAction<{
+      image: string;
+      name: string;
+    }>
+  >;
+}) => {
+  try {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "x-api-key": process.env.NEXT_PUBLIC_ARK_API_KEY || "",
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const imageUrl = data.result.metadata.normalized.image;
+      const imageName = data.result.metadata.normalized.name;
+
+      const img = new Image();
+      img.src = imageUrl;
+
+      img.onload = () => {
+        setNft({
+          image: data.result.metadata.normalized.image,
+          name: data.result.metadata.normalized.name,
+        });
+        setLoading(false);
+      };
+
+      img.onerror = (err) => {
+        console.error("An error occurred while loading the image", err);
+        setLoading(false);
+      };
+    }
+  } catch (error) {
+    console.error("An error occurred while fetching the nft", error);
   }
 };
