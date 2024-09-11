@@ -1,5 +1,15 @@
 # Getting Started
 
+## Token Bound Iframe
+
+this url allows you embed nft art and its token bound account on an iframe just by passing your token id and contract address
+
+## How Does It Work?
+
+- NFT Route: The contract address and token ID are extracted from the URL parameters `/contractAddress/tokenId`.The `fetchNFTData` function in `app/hooks/index.ts` fetches the NFT data, and the Token Bound Account (TBA) associated with the token ID (used as the salt) is returned.
+
+- TBA Route: The contract address of the TBA is retrieved from the URL parameters `/tokenboundAddress`. The getOwnerNFT function in `app/utils/index.ts` retrieves the owner NFT’s contract address and token ID. The NFT data is then fetched using the fetchNFTData function, also located in `app/utils/index.ts`.
+
 ## Usage
 
 1. Fork this repository.
@@ -29,12 +39,6 @@ pnpm dev
 ## Environment variables
 
 We use Ark Project for indexing NFT information and Alchemy for blockchain interactions. Ensure you have accounts with both platforms and input your API keys in the `.env.local` file.
-
-## Getting your NFT to show up in the iFrame
-
-- NFT Route: The contract address and token ID are extracted from the URL parameters `/contractAddress/tokenId`. The `fetchNFTData` function in `app/hooks/index.ts` fetches the NFT data, and the Token Bound Account (TBA) associated with the token ID (used as the salt) is returned.
-
-- TBA Route: The contract address of the TBA is retrieved from the URL parameters `/tokenboundAddress`. The getOwnerNFT function in `app/utils/index.ts` retrieves the owner NFT’s contract address and token ID. The NFT data is then fetched using the fetchNFTData function, also located in `app/utils/index.ts`.
 
 ## Learn More
 
