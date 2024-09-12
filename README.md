@@ -1,8 +1,6 @@
-# Getting Started
+# Tokenbound IFrame
 
-## Token Bound Iframe
-
-this url allows you embed nft art and its token bound account on an iframe just by passing your token id and contract address
+This url enables developers embed nft art and its token bound account on an iframe just by passing in a token id and contract address.
 
 ## How Does It Work?
 
