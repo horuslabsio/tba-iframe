@@ -54,13 +54,17 @@ const TokenBound = () => {
       network: "" | "mainnet" | "sepolia";
       url: string | undefined;
     }) => {
+      const alchemyBaseUrl = process.env.NEXT_PUBLIC_ALCHEMY_BASE_URL?.replace(
+        "%network%",
+        network
+      );
       const owner = await getOwnerNFT({
-        jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         tbaAddress: tokenboundAddress,
       });
       const ownerAddress = num.toHex(owner[0]);
       const ownerTokenId = owner[1].toString();
-      const END_POINT = `https://${url}/v1/tokens/${ownerAddress}/${ownerTokenId}`;
+      const END_POINT = `${url}/tokens/${ownerAddress}/${ownerTokenId}`;
       fetchNFTData({
         endpoint: END_POINT,
         setLoading: setNftLoading,
@@ -68,9 +72,6 @@ const TokenBound = () => {
       });
     };
     if (chainId && tokenboundAddress) {
-      // const { network, url } = getChainData(chainId.toUpperCase());
-      console.log(network);
-
       fetchOwnerNFT({ network, url });
       fetchTbaNonFungibleAssets({
         address: tokenboundAddress,

@@ -54,9 +54,13 @@ const Token = () => {
     network: NetworkType;
     url: string | undefined;
   }) => {
+    const alchemyBaseUrl = process.env.NEXT_PUBLIC_ALCHEMY_BASE_URL?.replace(
+      "%network%",
+      network
+    );
     const resAddress = await getAccount({
       chain: network,
-      jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+      jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       tokenContract: contractAddress,
       tokenId: tokenId,
     });
@@ -84,7 +88,7 @@ const Token = () => {
   };
 
   useEffect(() => {
-    const END_POINT = `https://${url}/v1/tokens/${contractAddress}/${tokenId}`;
+    const END_POINT = `${url}/tokens/${contractAddress}/${tokenId}`;
     fetchNFTData({
       endpoint: END_POINT,
       setLoading: setLoading,
