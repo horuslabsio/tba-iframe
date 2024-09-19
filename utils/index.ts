@@ -64,41 +64,45 @@ export const fetchTbaFungibleAssets = async ({
   >;
   onMainnet?: boolean;
 }) => {
+  const alchemyBaseUrl = process.env.NEXT_PUBLIC_ALCHEMY_BASE_URL?.replace(
+    "%network%",
+    network
+  );
   try {
     let currentDaiBalance: number | undefined = undefined;
     let currentUsdcBalance: number | undefined = undefined;
     let currentUsdtBalance: number | undefined = undefined;
     const ethBalance = await getBalance({
       address: tbaAddress,
-      jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+      jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       tokenAddress: ETHER_TOKEN_DETAILS.address,
       tokenDecimal: ETHER_TOKEN_DETAILS.decimal,
     });
 
     const strkBalance = await getBalance({
       address: tbaAddress,
-      jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+      jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       tokenAddress: STARK_TOKEN_DETAILS.address,
       tokenDecimal: STARK_TOKEN_DETAILS.decimal,
     });
     if (onMainnet) {
       const daiBalance = await getBalance({
         address: tbaAddress,
-        jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         tokenAddress: DAI_TOKEN_DETAILS.address,
         tokenDecimal: DAI_TOKEN_DETAILS.decimal,
       });
       currentDaiBalance = daiBalance;
       const usdcBalance = await getBalance({
         address: tbaAddress,
-        jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         tokenAddress: USDC_TOKEN_DETAILS.address,
         tokenDecimal: USDC_TOKEN_DETAILS.decimal,
       });
       currentUsdcBalance = usdcBalance;
       const usdtBalance = await getBalance({
         address: tbaAddress,
-        jsonRPC: `https://starknet-${network}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         tokenAddress: USDT_TOKEN_DETAILS.address,
         tokenDecimal: USDT_TOKEN_DETAILS.decimal,
       });
@@ -125,7 +129,7 @@ export const fetchTbaNonFungibleAssets = async ({
   address: string;
   setAssets: Dispatch<SetStateAction<any[]>>;
 }) => {
-  const endpoint = `https://${url}/v1/owners/${address}/tokens`;
+  const endpoint = `${url}/owners/${address}/tokens`;
   const res = await fetch(endpoint, {
     method: "GET",
     headers: {
@@ -148,18 +152,18 @@ export const getChainData = (
     case "SN_MAIN":
       return {
         network: "mainnet",
-        url: process.env.NEXT_PUBLIC_NETWORK_MAINNET,
+        url: process.env.NEXT_PUBLIC_ARK_MAINNET_API,
       };
     case "SN_SEPOLIA":
       return {
         network: "sepolia",
-        url: process.env.NEXT_PUBLIC_NETWORK_SEPOLIA,
+        url: process.env.NEXT_PUBLIC_ARK_SEPOLIA_API,
       };
 
     default:
       return {
         network: "",
-        url: process.env.NEXT_PUBLIC_NETWORK_SEPOLIA,
+        url: "",
       };
   }
 };
