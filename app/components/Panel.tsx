@@ -52,7 +52,7 @@ const Panel = ({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-scroll">
       <button
         onClick={() => setIsVisible(!isVisible)}
         className="absolute left-0 top-0 z-10 ml-5 mt-5 w-fit cursor-pointer rounded-full border-2 border-transparent bg-customGray p-2 opacity-[0.7] mix-blend-difference hover:opacity-[0.9]"
@@ -66,14 +66,14 @@ const Panel = ({
           animate="visible"
           exit="hidden"
           variants={containerVariants}
-          className="absolute inset-0 mt-20 h-full w-full space-y-3 overflow-y-auto rounded-t-xl border-t-0 bg-white px-5 pt-5 no-scrollbar"
+          className="absolute inset-0 mt-auto h-[85%] w-full space-y-3 overflow-y-auto rounded-t-xl border-t-0 bg-white px-5 pt-5 no-scrollbar"
         >
           <div className="mb-4 flex items-center justify-center">
             <div className="h-[2.5px] w-[34px] bg-[#E4E4E4]" />
           </div>
           <div className="flex flex-col justify-start gap-2">
             <p>{nftName}</p>
-            <div className="flex items-center justify-start">
+            <div className="flex items-center justify-start gap-2">
               <div className="relative inline-block text-left">
                 <div className="flex items-center justify-start">
                   <CopyButton
@@ -120,7 +120,7 @@ const Panel = ({
           </div>
 
           {activeTab == 0 && (
-            <div className="py-4">
+            <div className="px-2 py-4">
               {collectibles.length ? (
                 <div className="grid grid-cols-1 gap-2 overflow-y-auto md:grid-cols-3">
                   {collectibles.map((_, i) => (

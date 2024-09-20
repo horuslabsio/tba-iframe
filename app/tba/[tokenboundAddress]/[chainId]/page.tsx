@@ -26,7 +26,7 @@ const TokenBound = () => {
     image: "",
     name: "",
   });
-  const [nftLoading, setNftLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [collectibles, setCollectibles] = useState<any[]>([]);
 
   const [tba, setTba] = useState<{
@@ -67,7 +67,7 @@ const TokenBound = () => {
       const END_POINT = `${url}/tokens/${ownerAddress}/${ownerTokenId}`;
       fetchNFTData({
         endpoint: END_POINT,
-        setLoading: setNftLoading,
+        setLoading: setLoading,
         setNft: setNft,
       });
     };
@@ -88,9 +88,9 @@ const TokenBound = () => {
   }, [network]);
 
   return (
-    <main className="h-screen">
-      <section className="container mx-auto flex h-full w-full lg:max-h-[100rem] lg:w-[50vw] lg:max-w-[100rem]">
-        {nftLoading ? (
+    <main className="grid h-screen items-center">
+      <section className="container mx-auto flex h-full max-h-[100rem] w-full lg:w-[50vw] lg:max-w-[100rem]">
+        {loading ? (
           <div className="flex h-full w-full items-center justify-center">
             <div className="flex h-20 w-20 animate-bounce items-center justify-center rounded-full text-[#d9d9d966] mix-blend-difference">
               <TBALogo2 />
@@ -99,13 +99,15 @@ const TokenBound = () => {
         ) : (
           <div className="relative h-full w-full">
             <div
-              className={`h-full p-2 transition-all lg:min-w-[50vw] ${isVisible ? "h-full blur-sm" : "h-[80%] blur-0"}`}
+              className={`grid h-full place-content-center transition-all ${isVisible ? "px-0 blur-sm" : "px-2 blur-0"}`}
             >
-              <img
-                src={nft?.image}
-                className={`h-full w-full ${isVisible ? "object-cover" : "object-contain"} `}
-                alt="NFT image"
-              />
+              <div className="h-[85vh] max-h-[100rem]">
+                <img
+                  src={nft?.image}
+                  className={`h-full w-full ${isVisible ? "object-cover" : "object-contain"} `}
+                  alt="NFT image"
+                />
+              </div>
             </div>
             <Panel
               activeTab={activeTab}
