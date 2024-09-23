@@ -1,7 +1,6 @@
 "use client";
-import { getAccount } from "@/hooks";
+import { getAccount, getLockedStatus } from "@/hooks";
 import {
-  NetworkType,
   fetchNFTData,
   fetchTbaFungibleAssets,
   fetchTbaNonFungibleAssets,
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react";
 import { num } from "starknet";
 import { TBALogo2 } from "@/public/svg/Icons";
 import Panel from "@/app/components/Panel";
+import { NetworkType, TBA_TYPE } from "@/types";
 
 const Token = () => {
   const { chainId, contractAddress, tokenId } = useParams<{
@@ -28,18 +28,13 @@ const Token = () => {
     name: "",
   });
   const [collectibles, setCollectibles] = useState<any[]>([]);
-
-  const [tba, setTba] = useState<{
-    address: string;
-    chain: NetworkType;
-    ethBalance: number;
-    strkBalance: number;
-    daiBalance?: number;
-    usdcBalance?: number;
-    usdtBalance?: number;
-  }>({
+  const [tba, setTba] = useState<TBA_TYPE>({
     address: "",
     chain: "",
+    locked: {
+      status: false,
+      timeLeftToUnlock: undefined,
+    },
     ethBalance: 0,
     strkBalance: 0,
     daiBalance: 0,
@@ -85,6 +80,19 @@ const Token = () => {
         onMainnet: network === "mainnet",
       });
     }
+    const locked_status = await getLockedStatus({
+      jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+      tbaAddress: tbaAddress,
+    });
+    setTba((prev) => {
+      return {
+        ...prev,
+        locked: {
+          status: locked_status?.status,
+          timeLeftToUnlock: locked_status?.time,
+        },
+      };
+    });
   };
 
   useEffect(() => {
@@ -126,6 +134,8 @@ const Token = () => {
               chain={network}
               isVisible={isVisible}
               nftName={nft.name}
+              lockedStatus={tba.locked.status}
+              timeLeftToUnlock={tba.locked.timeLeftToUnlock}
               setActiveTab={setActiveTab}
               setIsVisible={setIsVisible}
               ethBalance={tba.ethBalance}
