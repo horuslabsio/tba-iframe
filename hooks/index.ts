@@ -4,7 +4,7 @@ import {
   TBA_IMPLEMENTATION_ACCOUNT_MAINNET,
   TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA,
 } from "@/utils/constants";
-import { getProvider } from "@/utils";
+import { formatTime, getProvider } from "@/utils";
 import REGISTRY_ABI from "../app/abis/registry.abi.json";
 import ACCOUNT_ABI from "../app/abis/account.abi.json";
 import { BigNumberish, Contract } from "starknet";
@@ -54,5 +54,28 @@ export const getOwnerNFT = async (params: {
     return ownerNFT;
   } catch (error) {
     console.error("An error occurred while fetching the nft", error);
+  }
+};
+
+export const getLockedStatus = async (params: {
+  tbaAddress: string;
+  jsonRPC: string;
+}) => {
+  const { jsonRPC, tbaAddress } = params;
+  const provider = getProvider(jsonRPC);
+  const contract = new Contract(ACCOUNT_ABI, tbaAddress, provider);
+  try {
+    const res = await contract.is_locked();
+
+    const formatted_time = formatTime({
+      seconds: Number(res["1"]),
+    });
+
+    return {
+      status: res["0"],
+      time: formatted_time,
+    };
+  } catch (error) {
+    console.log("Error getting locked status: ", error);
   }
 };

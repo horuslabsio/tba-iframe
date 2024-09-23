@@ -1,9 +1,9 @@
 "use client";
 import Panel from "@/app/components/Panel";
-import { getOwnerNFT } from "@/hooks";
+import { getLockedStatus, getOwnerNFT } from "@/hooks";
 import { TBALogo2 } from "@/public/svg/Icons";
+import { TBA_TYPE } from "@/types";
 import {
-  NetworkType,
   fetchNFTData,
   fetchTbaFungibleAssets,
   fetchTbaNonFungibleAssets,
@@ -29,23 +29,20 @@ const TokenBound = () => {
   const [loading, setLoading] = useState(true);
   const [collectibles, setCollectibles] = useState<any[]>([]);
 
-  const [tba, setTba] = useState<{
-    address: string;
-    chain: NetworkType;
-    ethBalance: number;
-    strkBalance: number;
-    daiBalance?: number;
-    usdcBalance?: number;
-    usdtBalance?: number;
-  }>({
+  const [tba, setTba] = useState<TBA_TYPE>({
     address: "",
     chain: "",
+    locked: {
+      status: false,
+      timeLeftToUnlock: undefined,
+    },
     ethBalance: 0,
     strkBalance: 0,
     daiBalance: undefined,
     usdcBalance: undefined,
     usdtBalance: undefined,
   });
+
   useEffect(() => {
     const fetchOwnerNFT = async ({
       network,
@@ -69,6 +66,20 @@ const TokenBound = () => {
         endpoint: END_POINT,
         setLoading: setLoading,
         setNft: setNft,
+      });
+
+      const locked_status = await getLockedStatus({
+        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        tbaAddress: tokenboundAddress,
+      });
+      setTba((prev) => {
+        return {
+          ...prev,
+          locked: {
+            status: locked_status?.status,
+            timeLeftToUnlock: locked_status?.time,
+          },
+        };
       });
     };
     if (chainId && tokenboundAddress) {
@@ -114,6 +125,8 @@ const TokenBound = () => {
               address={tokenboundAddress}
               collectibles={collectibles}
               chain={network}
+              lockedStatus={tba.locked.status}
+              timeLeftToUnlock={tba.locked.timeLeftToUnlock}
               isVisible={isVisible}
               nftName={nft.name}
               setActiveTab={setActiveTab}

@@ -8,8 +8,7 @@ import {
   USDT_TOKEN_DETAILS,
 } from "@/utils/constants";
 import { Dispatch, SetStateAction } from "react";
-
-export type NetworkType = "" | "mainnet" | "sepolia";
+import { TBA_TYPE } from "@/types";
 
 export function getProvider(jsonRPC: string) {
   const provider = new RpcProvider({
@@ -51,17 +50,7 @@ export const fetchTbaFungibleAssets = async ({
 }: {
   network: "" | "mainnet" | "sepolia";
   tbaAddress: string;
-  setTba: Dispatch<
-    SetStateAction<{
-      address: string;
-      chain: NetworkType;
-      ethBalance: number;
-      strkBalance: number;
-      daiBalance?: number | undefined;
-      usdcBalance?: number | undefined;
-      usdtBalance?: number | undefined;
-    }>
-  >;
+  setTba: Dispatch<SetStateAction<TBA_TYPE>>;
   onMainnet?: boolean;
 }) => {
   const alchemyBaseUrl = process.env.NEXT_PUBLIC_ALCHEMY_BASE_URL?.replace(
@@ -213,4 +202,20 @@ export const fetchNFTData = async ({
   } catch (error) {
     console.error("An error occurred while fetching the nft", error);
   }
+};
+
+export const formatTime = ({ seconds }: { seconds: number }) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  let timeString = "";
+  if (hours > 0) {
+    timeString += `${hours}h `;
+  }
+  if (minutes > 0 || hours > 0) {
+    timeString += `${minutes}m `;
+  }
+  timeString += `${remainingSeconds}s`;
+  return timeString;
 };

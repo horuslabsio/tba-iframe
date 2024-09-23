@@ -1,14 +1,14 @@
-import { OpenNewIcon, TBALogo, WarnIcon } from "@/public/svg/Icons";
+import { LockedIcon, OpenNewIcon, TBALogo, WarnIcon } from "@/public/svg/Icons";
 import strkLogo from "@/public/strk.png";
 import ethLogo from "@/public/eth.png";
 import daiLogo from "@/public/dai.png";
 import usdcLogo from "@/public/usdc.png";
 import usdtLogo from "@/public/usdt.png";
-import { NetworkType } from "@/utils";
 import CopyButton from "@/utils/CopyButton";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
+import { NetworkType } from "@/types";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 100 },
@@ -21,6 +21,8 @@ type Props = {
   setIsVisible: (value: SetStateAction<boolean>) => void;
   nftName: string;
   address: string;
+  lockedStatus: boolean;
+  timeLeftToUnlock: string | undefined;
   chain: NetworkType;
   activeTab: number;
   setActiveTab: Dispatch<SetStateAction<number>>;
@@ -46,6 +48,8 @@ const Panel = ({
   daiBalance,
   usdcBalance,
   usdtBalance,
+  lockedStatus,
+  timeLeftToUnlock,
 }: Props) => {
   const onTabChange = (tab: number) => {
     setActiveTab(tab);
@@ -73,16 +77,36 @@ const Panel = ({
           </div>
           <div className="flex flex-col justify-start gap-2">
             <p>{nftName}</p>
-            <div className="flex items-center justify-start gap-2">
+            <div className="flex flex-wrap items-center justify-start gap-2">
               <div className="relative inline-block text-left">
-                <div className="flex items-center justify-start">
-                  <CopyButton
-                    copyText={address}
-                    buttonText={`${address.slice(0, 4)}...${address.slice(-3)}`}
-                    className="rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74]"
-                  />
-                </div>
+                <CopyButton
+                  copyText={address}
+                  buttonText={`${address.slice(0, 4)}...${address.slice(-3)}`}
+                  className="rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74]"
+                />
               </div>
+              {lockedStatus === true && (
+                <>
+                  <div
+                    aria-hidden={true}
+                    className="flex items-center gap-2 rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs"
+                  >
+                    <span className="text-[1.4em] text-red-500">
+                      <LockedIcon />
+                    </span>
+                    <p className="text-[#666D74]">
+                      <span className="text-[1.1em] font-bold">
+                        {timeLeftToUnlock}
+                      </span>
+                      <span> until unlock</span>
+                    </p>
+                  </div>
+                  <p className="sr-only">
+                    Token Bound Account is locked. {timeLeftToUnlock} remaining
+                    until it unlocks.
+                  </p>
+                </>
+              )}
 
               <Link
                 title="View in starkscan"
