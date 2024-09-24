@@ -5,8 +5,21 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TBA iframe",
-  description: "Demo your token bound account",
+  title: "Token Bound Account Iframe | Showcase Your TBA Seamlessly",
+  description:
+    "Effortlessly display and showcase your Token Bound Account (TBA)",
+  openGraph: {
+    title: "Token Bound Account Iframe | Showcase Your TBA Seamlessly",
+    description:
+      "Effortlessly display and showcase your Token Bound Account (TBA)",
+    url: "https://iframe.tbaexplorer.com/",
+  },
+  twitter: {
+    card: "summary",
+    title: "Token Bound Account Iframe | Showcase Your TBA Seamlessly",
+    description:
+      "Effortlessly display and showcase your Token Bound Account (TBA)",
+  },
 };
 
 export default function RootLayout({
