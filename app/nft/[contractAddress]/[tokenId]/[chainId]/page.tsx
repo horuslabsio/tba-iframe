@@ -19,7 +19,7 @@ const Token = () => {
     tokenId: string;
     chainId: string;
   }>();
-  const { network, url } = getChainData(chainId.toUpperCase());
+  const { network, url, chainIdHex } = getChainData(chainId.toUpperCase());
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,13 @@ const Token = () => {
     image: "",
     name: "",
   });
-  const [collectibles, setCollectibles] = useState<any[]>([]);
+  const [collectibles, setCollectibles] = useState<
+    {
+      assetAddress: string;
+      assetTokenId: string;
+      assetImage: string;
+    }[]
+  >([]);
   const [tba, setTba] = useState<TBA_TYPE>({
     address: "",
     chain: "",
@@ -96,7 +102,7 @@ const Token = () => {
   };
 
   useEffect(() => {
-    const END_POINT = `${url}/tokens/${contractAddress}/${tokenId}`;
+    const END_POINT = `${url}/tokens/${contractAddress}/${chainIdHex}/${tokenId}`;
     fetchNFTData({
       endpoint: END_POINT,
       setLoading: setLoading,

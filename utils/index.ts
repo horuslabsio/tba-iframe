@@ -118,41 +118,58 @@ export const fetchTbaNonFungibleAssets = async ({
   address: string;
   setAssets: Dispatch<SetStateAction<any[]>>;
 }) => {
-  const endpoint = `${url}/owners/${address}/tokens`;
-  const res = await fetch(endpoint, {
-    method: "GET",
-    headers: {
-      "x-api-key": process.env.NEXT_PUBLIC_ARK_API_KEY || "",
-    },
-  });
-  if (res.ok) {
-    const data = await res.json();
-    setAssets(data.result);
-    console.log("all asset", data.result);
+  const endpoint = `${url}/${address}`;
+  try {
+    const response = await fetch(endpoint);
+    if (response.ok) {
+      const result = await response.json();
+      const assets = result.data.map((asset: any) => {
+        const {
+          collection_address: assetAddress,
+          token_id: assetTokenId,
+          metadata,
+        } = asset;
+        const assetImage =
+          metadata?.image ||
+          `https://placehold.co/250x250?text=${asset.collection_name}`;
+        return { assetAddress, assetTokenId, assetImage };
+      });
+      setAssets(assets);
+    }
+  } catch (error) {
+    console.log(
+      "Error getting token bound account non fungible assets:",
+      error
+    );
   }
 };
+
 export const getChainData = (
   id: string
 ): {
   network: "mainnet" | "sepolia" | "";
   url: string | undefined;
+  chainIdHex: string;
 } => {
   switch (id) {
     case "SN_MAIN":
       return {
         network: "mainnet",
         url: process.env.NEXT_PUBLIC_ARK_MAINNET_API,
+        chainIdHex: "0x534e5f4d41494e",
       };
     case "SN_SEPOLIA":
       return {
         network: "sepolia",
         url: process.env.NEXT_PUBLIC_ARK_SEPOLIA_API,
+        chainIdHex: "0x534e5f5345504f4c4941",
       };
 
     default:
       return {
         network: "",
         url: "",
+        chainIdHex: "",
       };
   }
 };
@@ -172,32 +189,17 @@ export const fetchNFTData = async ({
   >;
 }) => {
   try {
-    const response = await fetch(endpoint, {
-      method: "GET",
-      headers: {
-        "x-api-key": process.env.NEXT_PUBLIC_ARK_API_KEY || "",
-      },
-    });
+    const response = await fetch(endpoint);
     if (response.ok) {
-      const data = await response.json();
-      const imageUrl = data.result.metadata.normalized.image;
-      const imageName = data.result.metadata.normalized.name;
+      const result = await response.json();
+      const imageUrl = result.data.metadata.image;
+      const nftName = result.data.metadata.name;
 
-      const img = new Image();
-      img.src = imageUrl;
-
-      img.onload = () => {
-        setNft({
-          image: data.result.metadata.normalized.image,
-          name: data.result.metadata.normalized.name,
-        });
-        setLoading(false);
-      };
-
-      img.onerror = (err) => {
-        console.error("An error occurred while loading the image", err);
-        setLoading(false);
-      };
+      setNft({
+        image: imageUrl,
+        name: nftName,
+      });
+      setLoading(false);
     }
   } catch (error) {
     console.error("An error occurred while fetching the nft", error);
