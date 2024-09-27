@@ -119,16 +119,31 @@ export const fetchTbaNonFungibleAssets = async ({
   setAssets: Dispatch<SetStateAction<any[]>>;
 }) => {
   const endpoint = `${url}/owners/${address}/tokens`;
-  const res = await fetch(endpoint, {
-    method: "GET",
-    headers: {
-      "x-api-key": process.env.NEXT_PUBLIC_ARK_API_KEY || "",
-    },
-  });
-  if (res.ok) {
-    const data = await res.json();
-    setAssets(data.result);
-    console.log("all asset", data.result);
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "x-api-key": process.env.NEXT_PUBLIC_ARK_API_KEY || "",
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const assets = data.result.map((asset: any) => {
+        const { contract_address: assetAddress, metadata, token_id } = asset;
+
+        const assetImage =
+          metadata?.normalized?.image ||
+          `https://placehold.co/250x250?text=${metadata?.normalized?.image || token_id}`;
+        return { assetAddress, assetImage };
+      });
+      setAssets(assets);
+    }
+  } catch (error) {
+    console.log(
+      "Error getting token bound account non fungible assets:",
+      error
+    );
   }
 };
 export const getChainData = (
@@ -181,23 +196,13 @@ export const fetchNFTData = async ({
     if (response.ok) {
       const data = await response.json();
       const imageUrl = data.result.metadata.normalized.image;
-      const imageName = data.result.metadata.normalized.name;
+      const nftName = data.result.metadata.normalized.name;
 
-      const img = new Image();
-      img.src = imageUrl;
-
-      img.onload = () => {
-        setNft({
-          image: data.result.metadata.normalized.image,
-          name: data.result.metadata.normalized.name,
-        });
-        setLoading(false);
-      };
-
-      img.onerror = (err) => {
-        console.error("An error occurred while loading the image", err);
-        setLoading(false);
-      };
+      setNft({
+        image: imageUrl,
+        name: nftName,
+      });
+      setLoading(false);
     }
   } catch (error) {
     console.error("An error occurred while fetching the nft", error);

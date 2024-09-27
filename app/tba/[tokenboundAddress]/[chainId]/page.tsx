@@ -2,7 +2,7 @@
 import Panel from "@/app/components/Panel";
 import { getLockedStatus, getOwnerNFT } from "@/hooks";
 import { TBALogo2 } from "@/public/svg/Icons";
-import { TBA_TYPE } from "@/types";
+import { COLLECTABLE_TYPE, TBA_TYPE } from "@/types";
 import {
   fetchNFTData,
   fetchTbaFungibleAssets,
@@ -27,7 +27,7 @@ const TokenBound = () => {
     name: "",
   });
   const [loading, setLoading] = useState(true);
-  const [collectibles, setCollectibles] = useState<any[]>([]);
+  const [collectibles, setCollectibles] = useState<COLLECTABLE_TYPE[]>([]);
 
   const [tba, setTba] = useState<TBA_TYPE>({
     address: "",

@@ -13,3 +13,9 @@ export type TBA_TYPE = {
 };
 
 export type NetworkType = "" | "mainnet" | "sepolia";
+
+export type COLLECTABLE_TYPE = {
+  assetAddress: string;
+  assetTokenId: string;
+  assetImage: string;
+};

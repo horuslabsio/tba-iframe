@@ -8,7 +8,7 @@ import CopyButton from "@/utils/CopyButton";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
-import { NetworkType } from "@/types";
+import { COLLECTABLE_TYPE, NetworkType } from "@/types";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 100 },
@@ -26,7 +26,7 @@ type Props = {
   chain: NetworkType;
   activeTab: number;
   setActiveTab: Dispatch<SetStateAction<number>>;
-  collectibles: any[];
+  collectibles: COLLECTABLE_TYPE[];
   ethBalance: number;
   strkBalance: number;
   daiBalance?: number | undefined;
@@ -55,6 +55,11 @@ const Panel = ({
     setActiveTab(tab);
   };
 
+  const getVoyagerUrl = (chain: NetworkType, address: string): string => {
+    const subdomain = chain === "sepolia" ? "sepolia." : "";
+    return `https://${subdomain}voyager.online/contract/${address}?mtm_campaign=token-bound-iframe-redirect&mtm_source=horus-labs&mtm_medium=referral`;
+  };
+
   return (
     <div className="w-full overflow-scroll">
       <button
@@ -70,7 +75,7 @@ const Panel = ({
           animate="visible"
           exit="hidden"
           variants={containerVariants}
-          className="absolute inset-0 mt-auto h-[85%] w-full space-y-3 overflow-y-auto rounded-t-xl border-t-0 bg-white px-5 pt-5 no-scrollbar"
+          className="absolute inset-0 mt-auto flex h-[85%] w-full flex-col space-y-3 overflow-hidden rounded-t-xl border-t-0 bg-white px-5 pt-5 no-scrollbar"
         >
           <div className="mb-4 flex items-center justify-center">
             <div className="h-[2.5px] w-[34px] bg-[#E4E4E4]" />
@@ -109,10 +114,10 @@ const Panel = ({
               )}
 
               <Link
-                title="View in starkscan"
+                title="View in voyager"
                 target="_blank"
                 rel="noopener noreferrer"
-                href={`https://${chain === "sepolia" ? "sepolia." : ""}starkscan.co/contract/${address}`}
+                href={getVoyagerUrl(chain, address)}
                 className="h-[20px] w-[20px] text-[#A1A1AA] transition-all hover:text-primary"
               >
                 <OpenNewIcon />
@@ -144,23 +149,21 @@ const Panel = ({
           </div>
 
           {activeTab == 0 && (
-            <div className="px-2 py-4">
+            <div className="flex-1 px-2">
               {collectibles.length ? (
-                <div className="grid grid-cols-1 gap-2 overflow-y-auto md:grid-cols-3">
-                  {collectibles.map((_, i) => (
-                    <div key={i} className="h-full w-full">
+                <div className="no-scroll-bar grid max-h-[calc((100vh*.85)*.70)] grid-cols-1 gap-2 overflow-y-auto pb-8 pt-4 md:grid-cols-3">
+                  {collectibles.map((token, i) => (
+                    <div key={i} className="h-[14rem] w-full">
                       <Link
-                        href="https://opensea.io/assets/ethereum/0x007af8ab4f1933c1e1512f344f132d0502b2ef33/0"
+                        href={getVoyagerUrl(chain, token.assetAddress)}
                         target="_blank"
                         className="cursor-pointer"
                       >
                         <div className="relative h-full w-full">
                           <img
-                            className="aspect-square rounded-xl object-cover"
-                            src="https://nft-cdn.alchemy.com/eth-mainnet/a74029fcf172f7b87a86ebf36ea4e64b"
+                            className="aspect-square h-full w-full rounded-xl object-cover"
+                            src={token.assetImage}
                             alt="token image"
-                            width="full"
-                            height="full"
                           />
                           <div className="absolute left-4 top-4 rounded-lg bg-[#000] bg-opacity-10 px-2 py-1 text-white backdrop-blur-sm">
                             <div className="font-sans text-sm font-semibold">

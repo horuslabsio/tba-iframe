@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { num } from "starknet";
 import { TBALogo2 } from "@/public/svg/Icons";
 import Panel from "@/app/components/Panel";
-import { NetworkType, TBA_TYPE } from "@/types";
+import { COLLECTABLE_TYPE, NetworkType, TBA_TYPE } from "@/types";
 
 const Token = () => {
   const { chainId, contractAddress, tokenId } = useParams<{
@@ -27,7 +27,7 @@ const Token = () => {
     image: "",
     name: "",
   });
-  const [collectibles, setCollectibles] = useState<any[]>([]);
+  const [collectibles, setCollectibles] = useState<COLLECTABLE_TYPE[]>([]);
   const [tba, setTba] = useState<TBA_TYPE>({
     address: "",
     chain: "",
