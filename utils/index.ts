@@ -118,7 +118,7 @@ export const fetchTbaNonFungibleAssets = async ({
   address: string;
   setAssets: Dispatch<SetStateAction<any[]>>;
 }) => {
-  const endpoint = `${url}/${address}`;
+  const endpoint = `${url}/portfolio/${address}`;
   try {
     const response = await fetch(endpoint);
     if (response.ok) {
