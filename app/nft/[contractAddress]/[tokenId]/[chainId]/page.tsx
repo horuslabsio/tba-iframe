@@ -54,39 +54,41 @@ const Token = () => {
       tokenContract: contractAddress,
       tokenId: tokenId,
     });
-    const tbaAddress = num.toHex(resAddress);
-    if (tbaAddress) {
+    if (resAddress) {
+      const tbaAddress = num.toHex(resAddress);
+      if (tbaAddress) {
+        setTba((prev) => {
+          return {
+            ...prev,
+            address: tbaAddress,
+            chain: network,
+          };
+        });
+        fetchTbaNonFungibleAssets({
+          address: tbaAddress,
+          setAssets: setCollectibles,
+        });
+        fetchTbaFungibleAssets({
+          network,
+          tbaAddress,
+          setTba,
+          onMainnet: network === "mainnet",
+        });
+      }
+      const locked_status = await getLockedStatus({
+        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+        tbaAddress: tbaAddress,
+      });
       setTba((prev) => {
         return {
           ...prev,
-          address: tbaAddress,
-          chain: network,
+          locked: {
+            status: locked_status?.status,
+            timeLeftToUnlock: locked_status?.time,
+          },
         };
       });
-      fetchTbaNonFungibleAssets({
-        address: tbaAddress,
-        setAssets: setCollectibles,
-      });
-      fetchTbaFungibleAssets({
-        network,
-        tbaAddress,
-        setTba,
-        onMainnet: network === "mainnet",
-      });
     }
-    const locked_status = await getLockedStatus({
-      jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      tbaAddress: tbaAddress,
-    });
-    setTba((prev) => {
-      return {
-        ...prev,
-        locked: {
-          status: locked_status?.status,
-          timeLeftToUnlock: locked_status?.time,
-        },
-      };
-    });
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { Contract, RpcProvider } from "starknet";
-import ERC20ABI from "../app/abis/token.abi.json";
+import ERC20ABI from "../abis/token.abi.json";
 import {
   DAI_TOKEN_DETAILS,
   ETHER_TOKEN_DETAILS,
