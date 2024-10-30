@@ -12,6 +12,7 @@ import { num } from "starknet";
 import { TBALogo2 } from "@/public/svg/Icons";
 import Panel from "@/app/components/Panel";
 import { COLLECTABLE_TYPE, NetworkType, TBA_TYPE } from "@/types";
+import Unavailable from "@/app/components/Unavailable";
 
 const Token = () => {
   const { chainId, contractAddress, tokenId } = useParams<{
@@ -19,7 +20,7 @@ const Token = () => {
     tokenId: string;
     chainId: string;
   }>();
-  const { network, url } = getChainData(chainId.toUpperCase());
+  const { network, chainIdHex } = getChainData(chainId.toUpperCase());
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -42,13 +43,7 @@ const Token = () => {
     usdtBalance: 0,
   });
 
-  const fetchTBA = async ({
-    network,
-    url,
-  }: {
-    network: NetworkType;
-    url: string | undefined;
-  }) => {
+  const fetchTBA = async ({ network }: { network: NetworkType }) => {
     const alchemyBaseUrl = process.env.NEXT_PUBLIC_ALCHEMY_BASE_URL?.replace(
       "%network%",
       network
@@ -70,7 +65,6 @@ const Token = () => {
       });
       fetchTbaNonFungibleAssets({
         address: tbaAddress,
-        url: url || "",
         setAssets: setCollectibles,
       });
       fetchTbaFungibleAssets({
@@ -96,14 +90,19 @@ const Token = () => {
   };
 
   useEffect(() => {
-    const END_POINT = `${url}/tokens/${contractAddress}/${tokenId}`;
     fetchNFTData({
-      endpoint: END_POINT,
+      contractAddress,
+      chainIdHex,
+      tokenId,
       setLoading: setLoading,
       setNft: setNft,
     });
-    fetchTBA({ network: network, url: url });
+    fetchTBA({ network: network });
   }, []);
+  if (network === "sepolia")
+    return (
+      <Unavailable message="Token bound Iframe is Currently Unavailable on Sepolia.💔" />
+    );
 
   return (
     <main className="grid h-screen items-center">

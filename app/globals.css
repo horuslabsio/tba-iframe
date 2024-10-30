@@ -12,3 +12,11 @@
 body {
   background-color: #f1f5f9;
 }
+
+.no-scroll-bar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scroll-bar::-webkit-scrollbar {
+  display: none;
+}
