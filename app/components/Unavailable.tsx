@@ -1,6 +1,6 @@
 import { TBALogo2 } from "@/public/svg/Icons";
 
-const Unavailable = () => {
+const Unavailable = ({ message }: { message: string }) => {
   return (
     <main className="grid h-screen items-center">
       <section className="container mx-auto flex h-full max-h-[100rem] w-full lg:w-[50vw] lg:max-w-[100rem]">
@@ -8,9 +8,7 @@ const Unavailable = () => {
           <div className="mx-auto h-24 w-24 md:h-40 md:w-40">
             <TBALogo2 />
           </div>
-          <p className="text-xl font-bold">
-            Token bound Iframe is Currently Unavailable on Sepolia.💔{" "}
-          </p>
+          <p className="text-xl font-bold">{message}</p>
         </div>
       </section>
     </main>

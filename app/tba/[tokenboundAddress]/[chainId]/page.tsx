@@ -22,6 +22,7 @@ const TokenBound = () => {
   const { network, chainIdHex } = getChainData(chainId.toUpperCase());
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [tbaNotFound, setTbaNotFound] = useState(false);
 
   const [nft, setNft] = useState({
     image: "",
@@ -59,30 +60,33 @@ const TokenBound = () => {
         tbaAddress: tokenboundAddress,
       });
 
-      const ownerAddress = num.toHex(owner[0]);
-      const ownerTokenId = owner[1].toString();
+      if (owner) {
+        const ownerAddress = num.toHex(owner[0]);
+        const ownerTokenId = owner[1].toString();
 
-      fetchNFTData({
-        contractAddress: ownerAddress,
-        chainIdHex,
-        tokenId: ownerTokenId,
-        setLoading: setLoading,
-        setNft: setNft,
-      });
-
-      const locked_status = await getLockedStatus({
-        jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-        tbaAddress: tokenboundAddress,
-      });
-      setTba((prev) => {
-        return {
-          ...prev,
-          locked: {
-            status: locked_status?.status,
-            timeLeftToUnlock: locked_status?.time,
-          },
-        };
-      });
+        fetchNFTData({
+          contractAddress: ownerAddress,
+          chainIdHex,
+          tokenId: ownerTokenId,
+          setLoading: setLoading,
+          setNft: setNft,
+        });
+        const locked_status = await getLockedStatus({
+          jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+          tbaAddress: tokenboundAddress,
+        });
+        setTba((prev) => {
+          return {
+            ...prev,
+            locked: {
+              status: locked_status?.status,
+              timeLeftToUnlock: locked_status?.time,
+            },
+          };
+        });
+      } else {
+        setTbaNotFound(true);
+      }
     };
     if (chainId && tokenboundAddress) {
       fetchOwnerNFT({ network });
@@ -98,7 +102,12 @@ const TokenBound = () => {
       });
     }
   }, [network]);
-  if (network === "sepolia") return <Unavailable />;
+  if (network === "sepolia")
+    return (
+      <Unavailable message="Token bound Iframe is Currently Unavailable on Sepolia.💔" />
+    );
+  if (tbaNotFound)
+    return <Unavailable message="Token bound Account Not Found💔" />;
 
   return (
     <main className="grid h-screen items-center">

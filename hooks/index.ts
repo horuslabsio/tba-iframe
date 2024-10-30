@@ -53,7 +53,9 @@ export const getOwnerNFT = async (params: {
     const ownerNFT = await contract.token();
     return ownerNFT;
   } catch (error) {
-    console.error("An error occurred while fetching the nft", error);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("An error occurred while fetching the nft", error);
+    }
   }
 };
 
