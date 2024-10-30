@@ -1,5 +1,6 @@
 "use client";
 import Panel from "@/app/components/Panel";
+import Unavailable from "@/app/components/Unavailable";
 import { getLockedStatus, getOwnerNFT } from "@/hooks";
 import { TBALogo2 } from "@/public/svg/Icons";
 import { COLLECTABLE_TYPE, TBA_TYPE } from "@/types";
@@ -18,7 +19,7 @@ const TokenBound = () => {
     tokenboundAddress: string;
     chainId: string;
   }>();
-  const { network, url, chainIdHex } = getChainData(chainId.toUpperCase());
+  const { network, chainIdHex } = getChainData(chainId.toUpperCase());
   const [activeTab, setActiveTab] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -46,10 +47,8 @@ const TokenBound = () => {
   useEffect(() => {
     const fetchOwnerNFT = async ({
       network,
-      url,
     }: {
       network: "" | "mainnet" | "sepolia";
-      url: string | undefined;
     }) => {
       const alchemyBaseUrl = process.env.NEXT_PUBLIC_ALCHEMY_BASE_URL?.replace(
         "%network%",
@@ -59,11 +58,14 @@ const TokenBound = () => {
         jsonRPC: `${alchemyBaseUrl}${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
         tbaAddress: tokenboundAddress,
       });
+
       const ownerAddress = num.toHex(owner[0]);
       const ownerTokenId = owner[1].toString();
-      const END_POINT = `${url}/tokens/${ownerAddress}/${chainIdHex}/${ownerTokenId}`;
+
       fetchNFTData({
-        endpoint: END_POINT,
+        contractAddress: ownerAddress,
+        chainIdHex,
+        tokenId: ownerTokenId,
         setLoading: setLoading,
         setNft: setNft,
       });
@@ -83,10 +85,9 @@ const TokenBound = () => {
       });
     };
     if (chainId && tokenboundAddress) {
-      fetchOwnerNFT({ network, url });
+      fetchOwnerNFT({ network });
       fetchTbaNonFungibleAssets({
         address: tokenboundAddress,
-        url: url || "",
         setAssets: setCollectibles,
       });
       fetchTbaFungibleAssets({
@@ -97,6 +98,7 @@ const TokenBound = () => {
       });
     }
   }, [network]);
+  if (network === "sepolia") return <Unavailable />;
 
   return (
     <main className="grid h-screen items-center">

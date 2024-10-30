@@ -111,16 +111,16 @@ export const fetchTbaFungibleAssets = async ({
 };
 export const fetchTbaNonFungibleAssets = async ({
   address,
-  url,
+
   setAssets,
 }: {
-  url: string;
   address: string;
   setAssets: Dispatch<SetStateAction<any[]>>;
 }) => {
-  const endpoint = `${url}/portfolio/${address}`;
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_MARKETPLACE_API_URL}/portfolio/${address}`
+    );
     if (response.ok) {
       const result = await response.json();
       const assets = result.data.map((asset: any) => {
@@ -148,38 +148,38 @@ export const getChainData = (
   id: string
 ): {
   network: "mainnet" | "sepolia" | "";
-  url: string | undefined;
   chainIdHex: string;
 } => {
   switch (id) {
     case "SN_MAIN":
       return {
         network: "mainnet",
-        url: process.env.NEXT_PUBLIC_ARK_MAINNET_API,
         chainIdHex: "0x534e5f4d41494e",
       };
     case "SN_SEPOLIA":
       return {
         network: "sepolia",
-        url: process.env.NEXT_PUBLIC_ARK_SEPOLIA_API,
         chainIdHex: "0x534e5f5345504f4c4941",
       };
 
     default:
       return {
         network: "",
-        url: "",
         chainIdHex: "",
       };
   }
 };
 
 export const fetchNFTData = async ({
-  endpoint,
-  setLoading,
+  chainIdHex,
+  contractAddress,
+  tokenId,
   setNft,
+  setLoading,
 }: {
-  endpoint: string;
+  contractAddress: string;
+  tokenId: string;
+  chainIdHex: string;
   setLoading: Dispatch<SetStateAction<boolean>>;
   setNft: Dispatch<
     SetStateAction<{
@@ -189,7 +189,9 @@ export const fetchNFTData = async ({
   >;
 }) => {
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_MARKETPLACE_API_URL}/tokens/${contractAddress}/${chainIdHex}/${tokenId}`
+    );
     if (response.ok) {
       const result = await response.json();
       const imageUrl = result.data.metadata.image;

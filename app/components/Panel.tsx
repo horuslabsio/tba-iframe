@@ -7,32 +7,13 @@ import usdtLogo from "@/public/usdt.png";
 import CopyButton from "@/utils/CopyButton";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
-import { COLLECTABLE_TYPE, NetworkType } from "@/types";
+import { NetworkType, PanelProps } from "@/types";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 100 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
 };
 const tabs = ["Collectibles", "Assets"];
-
-type Props = {
-  isVisible: boolean;
-  setIsVisible: (value: SetStateAction<boolean>) => void;
-  nftName: string;
-  address: string;
-  lockedStatus: boolean;
-  timeLeftToUnlock: string | undefined;
-  chain: NetworkType;
-  activeTab: number;
-  setActiveTab: Dispatch<SetStateAction<number>>;
-  collectibles: COLLECTABLE_TYPE[];
-  ethBalance: number;
-  strkBalance: number;
-  daiBalance?: number | undefined;
-  usdcBalance?: number | undefined;
-  usdtBalance?: number | undefined;
-};
 
 const Panel = ({
   address,
@@ -50,7 +31,7 @@ const Panel = ({
   usdtBalance,
   lockedStatus,
   timeLeftToUnlock,
-}: Props) => {
+}: PanelProps) => {
   const onTabChange = (tab: number) => {
     setActiveTab(tab);
   };
@@ -151,9 +132,9 @@ const Panel = ({
           {activeTab == 0 && (
             <div className="flex-1 px-2">
               {collectibles.length ? (
-                <div className="no-scroll-bar grid max-h-[calc((100vh*.85)*.70)] grid-cols-1 gap-2 overflow-y-auto pb-8 pt-4 md:grid-cols-3">
+                <div className="no-scroll-bar flex max-h-[calc((100vh*.85)*.70)] flex-wrap gap-2 overflow-y-auto pb-8 pt-4 md:grid-cols-3">
                   {collectibles.map((token, i) => (
-                    <div key={i} className="h-[14rem] w-full">
+                    <div key={i} className="h-[8rem] w-[8rem]">
                       <Link
                         href={getVoyagerUrl(chain, token.assetAddress)}
                         target="_blank"
