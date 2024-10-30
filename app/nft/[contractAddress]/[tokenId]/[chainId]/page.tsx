@@ -54,6 +54,7 @@ const Token = () => {
       tokenContract: contractAddress,
       tokenId: tokenId,
     });
+
     if (resAddress) {
       const tbaAddress = num.toHex(resAddress);
       if (tbaAddress) {
@@ -101,6 +102,7 @@ const Token = () => {
     });
     fetchTBA({ network: network });
   }, []);
+
   if (network === "sepolia")
     return (
       <Unavailable message="Token bound Iframe is Currently Unavailable on Sepolia.💔" />

@@ -1,10 +1,10 @@
 import {
-  TBA_IMPLEMENTATION_ACCOUNT_MAINNET_V3,
-  TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA_V3,
+  TBA_IMPLEMENTATION_HASH_MAINNET_V3,
+  TBA_IMPLEMENTATION_HASH_SEPOLIA_V3,
   TBA_REGISTRY_ADDRESS_MAINNET_V3,
   TBA_REGISTRY_ADDRESS_SEPOLIA_V3,
-  TBA_IMPLEMENTATION_ACCOUNT_MAINNET_V2,
-  TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA_V2,
+  TBA_IMPLEMENTATION_HASH_MAINNET_V2,
+  TBA_IMPLEMENTATION_HASH_SEPOLIA_V2,
   TBA_REGISTRY_ADDRESS_SEPOLIA_V2,
   TBA_REGISTRY_ADDRESS_MAINNET_V2,
 } from "@/utils/constants";
@@ -26,6 +26,8 @@ export const getAccount = async (params: {
 
   const provider = getProvider(jsonRPC);
 
+  let v3address: BigNumberish | undefined;
+
   // v3 registry and implementation addresses
   const v3registryAddress =
     chain === "mainnet"
@@ -34,8 +36,8 @@ export const getAccount = async (params: {
   const v3contract = new Contract(V3_REGISTRY_ABI, v3registryAddress, provider);
   const v3implementationAddress =
     chain === "mainnet"
-      ? TBA_IMPLEMENTATION_ACCOUNT_MAINNET_V3
-      : TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA_V3;
+      ? TBA_IMPLEMENTATION_HASH_MAINNET_V3
+      : TBA_IMPLEMENTATION_HASH_SEPOLIA_V3;
 
   // v2 registry and implementation addresses
   const v2registryAddress =
@@ -45,48 +47,50 @@ export const getAccount = async (params: {
   const v2contract = new Contract(V2_REGISTRY_ABI, v2registryAddress, provider);
   const v2implementationAddress =
     chain === "mainnet"
-      ? TBA_IMPLEMENTATION_ACCOUNT_MAINNET_V2
-      : TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA_V2;
-
-  // try {
-  //   const address: BigNumberish = await contract.get_account(
-  //     v2implementationAddress,
-  //     tokenContract,
-  //     tokenId,
-  //     salt || tokenId
-  //   );
-  //   return address;
-  // } catch (error) {
-  //   throw error;
-  // }
+      ? TBA_IMPLEMENTATION_HASH_MAINNET_V2
+      : TBA_IMPLEMENTATION_HASH_SEPOLIA_V2;
 
   try {
-    const v3address: BigNumberish = await v3contract.get_account(
+    v3address = await v3contract.get_account(
       v3implementationAddress,
       tokenContract,
       tokenId,
       salt || tokenId,
-      "SN_MAIN"
+      chain === "mainnet" ? "SN_MAIN" : "SN_SEPOLIA"
     );
-    console.log(v3address);
-    return v3address;
+    if (
+      (await provider.getClassHashAt(v3address ? v3address : "")) ===
+      v3implementationAddress
+    ) {
+      return v3address;
+    }
   } catch (v3error) {
-    console.log(v3error);
-
-    // try {
-    //   const v2address: BigNumberish = await v2contract.get_account(
-    //     v2implementationAddress,
-    //     tokenContract,
-    //     tokenId,
-    //     salt || tokenId
-    //   );
-    //   return v2address;
-    // } catch (v2error) {
-    //   console.error(
-    //     `Failed to get account with both V3 and V2 inputs. V3 error: ${v3error}, V2 error: ${v2error}`
-    //   );
-    // }
+    console.error(`V3 error: ${v3error}`);
   }
+
+  try {
+    const v2address: BigNumberish = await v2contract.get_account(
+      v2implementationAddress,
+      tokenContract,
+      tokenId,
+      salt || tokenId
+    );
+
+    if (
+      (await provider.getClassHashAt(v2address)) === v3implementationAddress
+    ) {
+      return v2address;
+    } else if (
+      (await provider.getClassHashAt(v2address)) === v2implementationAddress
+    ) {
+      return v2address;
+    }
+  } catch (v2error) {
+    console.error(
+      `Failed to get account with both V3 and V2 inputs. V3 error: ${v2error}`
+    );
+  }
+  return v3address;
 };
 
 export const getOwnerNFT = async (params: {

@@ -107,7 +107,7 @@ const TokenBound = () => {
       <Unavailable message="Token bound Iframe is Currently Unavailable on Sepolia.💔" />
     );
   if (tbaNotFound)
-    return <Unavailable message="Token bound Account Not Found💔" />;
+    return <Unavailable message="Token bound Account Not Found 💔" />;
 
   return (
     <main className="grid h-screen items-center">
