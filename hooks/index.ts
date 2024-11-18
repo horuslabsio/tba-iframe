@@ -68,7 +68,6 @@ export const getLockedStatus = async (params: {
   const contract = new Contract(ACCOUNT_ABI, tbaAddress, provider);
   try {
     const res = await contract.is_locked();
-
     const formatted_time = formatTime({
       seconds: Number(res["1"]),
     });
