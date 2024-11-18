@@ -16,7 +16,10 @@ export default function Home() {
           />
         </div>
         <h1 className="mb-4 text-xl font-bold">Token bound Iframe</h1>
-        <a href="https://docs.tbaexplorer.com/toolings/tokenbound-iframe" className="text-blue-500 underline">
+        <a
+          href="https://docs.tbaexplorer.com/toolings/tokenbound-iframe"
+          className="text-blue-500 underline"
+        >
           visit docs
         </a>
       </div>
