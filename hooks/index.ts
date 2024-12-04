@@ -1,8 +1,8 @@
 import {
-  TBA_CONTRACT_ADDRESS_MAINNET,
-  TBA_CONTRACT_ADDRESS_SEPOLIA,
-  TBA_IMPLEMENTATION_ACCOUNT_MAINNET,
-  TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA,
+  TBA_REGISTRY_ADDRESS_MAINNET,
+  TBA_REGISTRY_ADDRESS_SEPOLIA,
+  TBA_IMPLEMENTATION_HASH_MAINNET,
+  TBA_IMPLEMENTATION_HASH_SEPOLIA,
 } from "@/utils/constants";
 import { formatTime, getProvider } from "@/utils";
 import REGISTRY_ABI from "../app/abis/registry.abi.json";
@@ -21,20 +21,21 @@ export const getAccount = async (params: {
   const provider = getProvider(jsonRPC);
   const registryAddress =
     chain === "mainnet"
-      ? TBA_CONTRACT_ADDRESS_MAINNET
-      : TBA_CONTRACT_ADDRESS_SEPOLIA;
+      ? TBA_REGISTRY_ADDRESS_MAINNET
+      : TBA_REGISTRY_ADDRESS_SEPOLIA;
   const contract = new Contract(REGISTRY_ABI, registryAddress, provider);
   const implementationAddress =
     chain === "mainnet"
-      ? TBA_IMPLEMENTATION_ACCOUNT_MAINNET
-      : TBA_IMPLEMENTATION_ACCOUNT_SEPOLIA;
+      ? TBA_IMPLEMENTATION_HASH_MAINNET
+      : TBA_IMPLEMENTATION_HASH_SEPOLIA;
 
   try {
     const address: BigNumberish = await contract.get_account(
       implementationAddress,
       tokenContract,
       tokenId,
-      salt || tokenId
+      salt || tokenId,
+      chain === "mainnet" ? "SN_MAIN" : "SN_SEPOLIA"
     );
     return address;
   } catch (error) {
